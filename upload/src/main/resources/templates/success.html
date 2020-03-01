@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel表格</title>
+</head>
+<body>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <h2><a class="btn btn-sm btn-success" href="/jisuan">计算器</a></h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>月份</th>
+                <th>税前工资</th>
+                <th>五险一金</th>
+                <th>专项附加扣除</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="list: ${excellent}">
+
+                <td th:text="${list.getMonth()}"></td>
+                <td th:text="${list.getIncome()}"></td>
+                <td th:text="${list.getInsurance()}"></td>
+                <td th:text="${list.getAttach()}"></td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>
