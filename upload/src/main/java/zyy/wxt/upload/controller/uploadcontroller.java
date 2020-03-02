@@ -1,19 +1,26 @@
 package zyy.wxt.upload.controller;
 
+import org.apache.tomcat.util.buf.Utf8Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 import zyy.wxt.upload.domain.salary;
 import zyy.wxt.upload.service.ImportService;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,23 +28,12 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 
+import static javax.xml.transform.OutputKeys.ENCODING;
+
 
 @Controller
 public class uploadcontroller {
-    private double SMonth;      //月份
-    private final double Sindex = 5000;//起征点
-    private double SAindex;//累计起征点
-    private double SPreIncome;//预交应纳税所得
-    private double STaxrate;  //税率
-    private double SQuickcal;   //速算扣除数
-    private double SPayable;   //应纳税额
-    private double Spaid;//已缴税额
-    private double Sfinallypay;//应补（退）税额
-    private double Ssal;//实发工资
-    private double Aincome;//累加累计收入
-    private double Ainsurance;//累计五险一金
-    private double AAttach;//累加专项附加扣除
-    List sumlist = new ArrayList();//用于存放本月应该税,便于下月计算最终税。
+
 
     @Value("${filePath}")
     private String filepath;
@@ -45,13 +41,18 @@ public class uploadcontroller {
     @Autowired
     private ImportService importService;
 
+    @RequestMapping("/index")
+    public String index() {
+        return "upload";
+    }
+
     @RequestMapping("/")
     public String upload() {
         return "upload";
     }
 
     List<salary> list = null;
-    List<salary> lt = new ArrayList<>();
+    List<salary> lt = null;
 
     @PostMapping(value = "/uploading")
     public String uploadExcel(@RequestParam("file") MultipartFile file, Model model) {
@@ -104,6 +105,22 @@ public class uploadcontroller {
     //所有坐标从零开始
     @RequestMapping("/jisuan")
     public String sum(Model model) {
+        lt = new ArrayList<>();
+        int SMonth = 1;      //月份
+        final double Sindex = 5000;//起征点
+        double SAindex = 0;//累计起征点
+        double SPreIncome = 0;//预交应纳税所得
+        double STaxrate = 0;  //税率
+        double SQuickcal = 0;   //速算扣除数
+        double SPayable = 0;   //应纳税额
+        double Spaid = 0;//已缴税额
+        double Sfinallypay = 0;//应补（退）税额
+        double Ssal = 0;//实发工资
+        double Aincome = 0;//累加累计收入
+        double Ainsurance = 0;//累计五险一金
+        double AAttach = 0;//累加专项附加扣除
+        List sumlist = new ArrayList();//用于存放本月应该税,便于下月计算最终税。
+
         for (int i = 0; i < 12; i++) {
             salary s = new salary();
             SMonth = SMonth++;
@@ -193,7 +210,7 @@ public class uploadcontroller {
     //下载
     @RequestMapping("/export")
     @ResponseBody
-    public void ex(HttpServletResponse response) {
+    public void ex(HttpServletResponse response, HttpServletRequest request) {
         ExcelWriter writer = ExcelUtil.getWriter();
         writer.addHeaderAlias("Month", "月份");
         writer.addHeaderAlias("Income", "税前工资");
@@ -215,13 +232,15 @@ public class uploadcontroller {
         writer.write(lt, true);
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         //下载表名
-        String name = "wxt";
+
+        String name="Demo";
         response.setHeader("Content-Disposition", "attachment;filename=" + name + ".xls");
         ServletOutputStream out = null;
         try {
             out = response.getOutputStream();
             writer.flush(out, true);
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
         } finally {
             writer.close();

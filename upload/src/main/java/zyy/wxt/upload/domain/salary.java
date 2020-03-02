@@ -2,7 +2,7 @@ package zyy.wxt.upload.domain;
 
 
 public class salary {
-    private double Month;      //月份
+    private Integer Month;      //月份
     private double Income;         //税前工资
     private double insurance;//五险一金
     private double Attach;//专项附加扣除
@@ -43,11 +43,33 @@ public class salary {
                 '}';
     }
 
-    public double getMonth() {
+    public salary() {
+    }
+
+    public salary(Integer month, double income, double insurance, double attach, double index, double aincome, double ainsurance, double AAttach, double aindex, double preIncome, double taxrate, double quickcal, double payable, double paid, double finallypay, double sal) {
+        Month = month;
+        Income = income;
+        this.insurance = insurance;
+        Attach = attach;
+        Index = index;
+        Aincome = aincome;
+        Ainsurance = ainsurance;
+        this.AAttach = AAttach;
+        Aindex = aindex;
+        PreIncome = preIncome;
+        Taxrate = taxrate;
+        Quickcal = quickcal;
+        Payable = payable;
+        this.paid = paid;
+        this.finallypay = finallypay;
+        this.sal = sal;
+    }
+
+    public Integer getMonth() {
         return Month;
     }
 
-    public void setMonth(double month) {
+    public void setMonth(Integer month) {
         Month = month;
     }
 
@@ -168,28 +190,6 @@ public class salary {
     }
 
     public void setSal(double sal) {
-        this.sal = sal;
-    }
-
-    public salary() {
-    }
-
-    public salary(double month, double income, double insurance, double attach, double index, double aincome, double ainsurance, double AAttach, double aindex, double preIncome, double taxrate, double quickcal, double payable, double paid, double finallypay, double sal) {
-        Month = month;
-        Income = income;
-        this.insurance = insurance;
-        Attach = attach;
-        Index = index;
-        Aincome = aincome;
-        Ainsurance = ainsurance;
-        this.AAttach = AAttach;
-        Aindex = aindex;
-        PreIncome = preIncome;
-        Taxrate = taxrate;
-        Quickcal = quickcal;
-        Payable = payable;
-        this.paid = paid;
-        this.finallypay = finallypay;
         this.sal = sal;
     }
 }

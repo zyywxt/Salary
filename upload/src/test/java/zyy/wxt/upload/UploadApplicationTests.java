@@ -2,6 +2,7 @@ package zyy.wxt.upload;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -11,10 +12,9 @@ import java.util.List;
 class UploadApplicationTests {
     @Test
     void demo() {
-        List list=new ArrayList();
-        list.add(112121);
-        list.add(121);
-        System.out.println(list.get(0));
+        String s="qwww";
+        double ss=12;
+        System.out.println(s+ss);
     }
 
 

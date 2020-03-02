@@ -1,6 +1,7 @@
 package zyy.wxt.upload.service;
 
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -9,7 +10,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import zyy.wxt.upload.domain.salary;
-
+import org.apache.poi.ss.usermodel.CellType;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ImportService {
                 }
                 salary s = new salary();
                 for (int y = row.getFirstCellNum(); y <= row.getLastCellNum(); y++) {
-                    double month = row.getCell(0).getNumericCellValue();
+                    int month = (int) row.getCell(0).getNumericCellValue();
                     double income = row.getCell(1).getNumericCellValue();
                     double insurance = row.getCell(2).getNumericCellValue();
                     double Attach = row.getCell(3).getNumericCellValue();
