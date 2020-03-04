@@ -1,13 +1,12 @@
 package zyy.wxt.upload.controller;
 
-import org.apache.tomcat.util.buf.Utf8Encoder;
+import com.sun.deploy.net.URLEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
 import zyy.wxt.upload.domain.salary;
 import zyy.wxt.upload.service.ImportService;
 
@@ -17,10 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +25,9 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 
-import static javax.xml.transform.OutputKeys.ENCODING;
-
 
 @Controller
+
 public class uploadcontroller {
 
 
@@ -40,6 +36,11 @@ public class uploadcontroller {
 
     @Autowired
     private ImportService importService;
+
+    @RequestMapping("/a")
+    public String a() {
+        return "a";
+    }
 
     @RequestMapping("/index")
     public String index() {
@@ -169,30 +170,31 @@ public class uploadcontroller {
                 sumlist.add(SPayable);
             } else {
                 sumlist.add(SPayable);
-                Spaid = (double) sumlist.get((int) (i - 1));
+                Spaid = (double) sumlist.get(i - 1);
             }
             Sfinallypay = SPayable - Spaid;
             if (i == 0) {
                 Ssal = list.get(0).getIncome() - list.get(0).getInsurance();
             } else {
-                Ssal = list.get((int) (i)).getIncome() - list.get((int) (i)).getInsurance() - Sfinallypay;
+                Ssal = list.get(i).getIncome() - list.get(i).getInsurance() - Sfinallypay;
             }
+
             s.setMonth(i + 1);
-            s.setIncome(list.get((int) (i)).getIncome());
-            s.setInsurance(list.get((int) (i)).getInsurance());
-            s.setAttach(list.get((int) (i)).getAttach());
-            s.setAincome(Aincome);
-            s.setAinsurance(Ainsurance);
-            s.setAAttach(AAttach);
-            s.setAindex(SAindex);
-            s.setPreIncome(SPreIncome);
-            s.setTaxrate(STaxrate);
-            s.setQuickcal(SQuickcal);
-            s.setPayable(SPayable);
-            s.setPaid(Spaid);
-            s.setFinallypay(Sfinallypay);
-            s.setSal(Ssal);
-            System.out.println("第" + (i + 1) + "月份" + "  " + "税前工资" + list.get((int) (i)).getIncome() + "  " + "五险一金" + list.get((int) (i)).getInsurance() + "  " + "专项附加扣除" + list.get((int) (i)).getAttach() + "  " + "总收入：" + Aincome + "  " + "累计五险一金" + Ainsurance + "  " + "累加专项附加扣除" + AAttach + "  " + "累计起征点" + SAindex + "  " + "预交应纳税所得" + SPreIncome + "  " + "税率" + STaxrate + "  " + "速算扣除数" + SQuickcal + "  " + "应纳税" + SPayable + "  " + "已交税" + Spaid + "  " + "最终个人税" + Sfinallypay + "  " + "税后工资" + Ssal);
+            s.setIncome(format(list.get(i).getIncome()));
+            s.setInsurance(format(list.get(i).getInsurance()));
+            s.setAttach(format(list.get(i).getAttach()));
+            s.setAincome(format(Aincome));
+            s.setAinsurance(format(Ainsurance));
+            s.setAAttach(format(AAttach));
+            s.setAindex(format(SAindex));
+            s.setPreIncome(format(SPreIncome));
+            s.setTaxrate(format(STaxrate));
+            s.setQuickcal(format(SQuickcal));
+            s.setPayable(format(SPayable));
+            s.setPaid(format(Spaid));
+            s.setFinallypay(format(Sfinallypay));
+            s.setSal(format(Ssal));
+            System.out.println("第" + (i + 1) + "月份" + "  " + "税前工资" + format(list.get(i).getIncome()) + "  " + "五险一金" + format(list.get(i).getInsurance()) + "  " + "专项附加扣除" + format(list.get(i).getAttach()) + "  " + "总收入：" + Aincome + "  " + "累计五险一金" + Ainsurance + "  " + "累加专项附加扣除" + AAttach + "  " + "累计起征点" + SAindex + "  " + "预交应纳税所得" + SPreIncome + "  " + "税率" + STaxrate + "  " + "速算扣除数" + SQuickcal + "  " + "应纳税" + SPayable + "  " + "已交税" + Spaid + "  " + "最终个人税" + Sfinallypay + "  " + "税后工资" + Ssal);
             lt.add(s);
         }
         model.addAttribute("result", lt);
@@ -200,17 +202,24 @@ public class uploadcontroller {
         System.out.println("===");
         for (int y = 0; y < lt.size(); y++) {
             salary l = lt.get(y);
-            //TODO 随意发挥
             System.out.println(l);
         }
 
         return "result";
     }
 
+    //使用精确小数BigDecimal  得到的数据保留两位(四舍五入)
+    public static double format(double num) {
+        BigDecimal bg = new BigDecimal(num);
+        double str = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return str;
+    }
+
     //下载
     @RequestMapping("/export")
     @ResponseBody
-    public void ex(HttpServletResponse response, HttpServletRequest request) {
+    public void ex(HttpServletResponse response, HttpServletRequest request) throws UnsupportedEncodingException {
+        //默认输出格式.xls   true
         ExcelWriter writer = ExcelUtil.getWriter();
         writer.addHeaderAlias("Month", "月份");
         writer.addHeaderAlias("Income", "税前工资");
@@ -230,11 +239,13 @@ public class uploadcontroller {
         writer.addHeaderAlias("sal", "实发工资");
         writer.merge(10, "申请人信息");
         writer.write(lt, true);
-        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        // 设置头信息
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/vnd.ms-excel");
         //下载表名
-
-        String name="Demo";
-        response.setHeader("Content-Disposition", "attachment;filename=" + name + ".xls");
+        String name = "小男孩学编程";
+        // 一定要设置成xlsx格式
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(name + ".xlsx", "UTF-8"));
         ServletOutputStream out = null;
         try {
             out = response.getOutputStream();
@@ -247,5 +258,4 @@ public class uploadcontroller {
         }
         IoUtil.close(out);
     }
-
 }

@@ -43,6 +43,7 @@ public class ImportService {
                 for (int y = row.getFirstCellNum(); y <= row.getLastCellNum(); y++) {
                     int month = (int) row.getCell(0).getNumericCellValue();
                     double income = row.getCell(1).getNumericCellValue();
+
                     double insurance = row.getCell(2).getNumericCellValue();
                     double Attach = row.getCell(3).getNumericCellValue();
                     s.setMonth(month);

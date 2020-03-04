@@ -1,55 +1,64 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>数据</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui.css"  media="all">
 </head>
 <body>
-<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-    <h2><a class="btn btn-sm btn-success" href="/export">下载</a></h2>
-    <h2><a class="btn btn-sm btn-success" href="/index">返回首页</a></h2>
-    <div class="table-responsive">
-        <table class="table table-striped table-sm">
-            <thead>
-            <tr>
-                <th>月份</th>
-                <th>本月收入</th>
-                <th>五险一金</th>
-                <th>专项附加扣除</th>
-                <th>总收入</th>
-                <th>累计五险一金</th>
-                <th>累加专项附加扣除</th>
-                <th>累计起征点</th>
-                <th>预交应纳税所得</th>
-                <th>税率</th>
-                <th>速算扣除数</th>
-                <th>应纳税额</th>
-                <th>已缴税额</th>
-                <th>应补（退）税额</th>
-                <th>实发工资</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="ls:${result}">
-                <td th:text="${ls.getMonth()}"></td>
-                <td th:text="${ls.getIncome()}"></td>
-                <td th:text="${ls.getInsurance()}"></td>
-                <td th:text="${ls.getAttach()}"></td>
-                <td th:text="${ls.getAincome()}"></td>
-                <td th:text="${ls.getAinsurance()}"></td>
-                <td th:text="${ls.getAAttach()}"></td>
-                <td th:text="${ls.getAindex()}"></td>
-                <td th:text="${ls.getPreIncome()}"></td>
-                <td th:text="${ls.getTaxrate()}"></td>
-                <td th:text="${ls.getQuickcal()}"></td>
-                <td th:text="${ls.getPayable()}"></td>
-                <td th:text="${ls.getPaid()}"></td>
-                <td th:text="${ls.getFinallypay()}"></td>
-                <td th:text="${ls.getSal()}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</main>
+<table class="layui-table">
+    <colgroup>
+        <col width="150">
+        <col width="200">
+        <col>
+    </colgroup>
+   <a 	class="layui-btn layui-btn-radius" href="/export">下载</a>
+    <a 	class="layui-btn layui-btn-radius layui-btn-danger " href="/index"> 返回首页</a>
+    <thead>
+    <tr>
+        <th>月份</th>
+        <th>本月收入</th>
+        <th>五险一金</th>
+        <th>专项附加扣除</th>
+        <th>总收入</th>
+        <th>累计五险一金</th>
+        <th>累加专项附加扣除</th>
+        <th>累计起征点</th>
+        <th>预交应纳税所得</th>
+        <th>税率</th>
+        <th>速算扣除数</th>
+        <th>应纳税额</th>
+        <th>已缴税额</th>
+        <th>应补（退）税额</th>
+        <th>实发工资</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ls:${result}">
+        <td th:text="${ls.getMonth()}"></td>
+        <td th:text="${ls.getIncome()}"></td>
+        <td th:text="${ls.getInsurance()}"></td>
+        <td th:text="${ls.getAttach()}"></td>
+        <td th:text="${ls.getAincome()}"></td>
+        <td th:text="${ls.getAinsurance()}"></td>
+        <td th:text="${ls.getAAttach()}"></td>
+        <td th:text="${ls.getAindex()}"></td>
+        <td th:text="${ls.getPreIncome()}"></td>
+        <td th:text="${ls.getTaxrate()}"><span>%</span></td>
+        <td th:text="${ls.getQuickcal()}"></td>
+        <td th:text="${ls.getPayable()}"></td>
+        <td th:text="${ls.getPaid()}"></td>
+        <td th:text="${ls.getFinallypay()}"></td>
+        <td th:text="${ls.getSal()}"></td>
+    </tr>
+
+    </tbody>
+</table>
+
+<script src="layui.js" charset="utf-8"></script>
+<script src="layui.all.js" charset="utf-8"></script>
 </body>
 </html>
